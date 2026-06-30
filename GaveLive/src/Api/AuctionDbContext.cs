@@ -18,7 +18,7 @@ public class AuctionDbContextFactory : IDesignTimeDbContextFactory<AuctionDbCont
     public AuctionDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AuctionDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=gavellive;Username=postgres;Password=password");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=gavellive;Username=postgres;Password=password"); // remove whole stringConnection 
         return new AuctionDbContext(optionsBuilder.Options);
     }
 }
