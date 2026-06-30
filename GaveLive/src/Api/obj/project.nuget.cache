@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0fF/Ux9Bn0U=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\Api\\Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\hesha\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.9\\microsoft.aspnetcore.openapi.10.0.9.nupkg.sha512",
+    "C:\\Users\\hesha\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
