@@ -1,4 +1,6 @@
-﻿namespace Api.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Api.Models;
 
 public class Auction
 {
@@ -10,4 +12,7 @@ public class Auction
     public DateTime StartsAt { get; set; }
     public DateTime EndsAt { get; set; }
     public string Status { get; set; } = "Active";
+
+    [Timestamp]
+    public uint RowVersion { get; set; }
 }
