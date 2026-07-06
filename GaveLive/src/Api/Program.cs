@@ -4,8 +4,18 @@ using Api.Features.GetAuctions;
 using Api.Features.PlaceBid;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog must be set up before anything else touches logging
+builder.Host.UseSerilog((context, config) =>
+{
+    config
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console();
+});
 
 // Add services
 builder.Services.AddDbContext<AuctionDbContext>(options =>
@@ -24,6 +34,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging(); // structured log per HTTP request, free
 
 app.UseHttpsRedirection();
 

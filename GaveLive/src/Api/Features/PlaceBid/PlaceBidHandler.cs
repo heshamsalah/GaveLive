@@ -7,10 +7,12 @@ namespace Api.Features.PlaceBid;
 public class PlaceBidHandler : IRequestHandler<PlaceBidCommand, PlaceBidResult>
 {
     private readonly AuctionDbContext _db;
+    private readonly ILogger<PlaceBidHandler> _logger;
 
-    public PlaceBidHandler(AuctionDbContext db)
+    public PlaceBidHandler(AuctionDbContext db, ILogger<PlaceBidHandler> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     public async Task<PlaceBidResult> Handle(PlaceBidCommand command, CancellationToken cancellationToken)
@@ -43,6 +45,14 @@ public class PlaceBidHandler : IRequestHandler<PlaceBidCommand, PlaceBidResult>
         {
             return new PlaceBidResult(false, "Someone else just placed a bid! Please try again.");
         }
+
+        _logger.LogInformation(
+            "Bid placed {AuctionId} {BidderId} {Amount} {Timestamp}",
+            bid.AuctionId,
+            bid.BidderId,
+            bid.Amount,
+            bid.PlacedAt
+        );
 
         return new PlaceBidResult(true, "Bid placed successfully!");
     }
