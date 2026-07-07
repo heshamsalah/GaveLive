@@ -1,4 +1,4 @@
-# GavelLivee
+# GaveLive
 
 A real-time auction platform built on ASP.NET Core and Angular, designed as an event-driven modular monolith with clean seams for a future microservices split.
 
