@@ -1,105 +1,90 @@
-# 🔨 GavelLive
+# GavelLive
 
-A real-time auction platform built with **.NET 9** and **Angular** — developed phase by phase as a hands-on learning project, where every technology is added only after feeling the problem it solves.
+A real-time auction platform built on ASP.NET Core and Angular, designed as an event-driven modular monolith with clean seams for a future microservices split.
 
-> **Golden rule of this project:** Never add a technology before you've felt the problem it solves. Redis comes after reads feel slow. A message broker comes after a notification blocks a bid.
+Users list items for auction, place bids, and watch prices update live across every connected client. The system is built around a tamper-evident bid audit trail, safe concurrent bidding, and independently scalable read and write paths.
 
----
+## Overview
 
-## 🏗️ Architecture
+GavelLive is structured as a modular monolith using Vertical Slice Architecture. Each feature — creating an auction, listing auctions, placing a bid — is a self-contained slice owning its request contract, validation, handler, and endpoint. There is no shared services layer; feature boundaries in the codebase map directly to the service boundaries a future decomposition would use.
 
-GavelLive is a **modular monolith** built with **Vertical Slice Architecture** — every feature lives in its own self-contained folder with its request, validation, handler, and endpoint. The design deliberately prepares clean seams for a future split into microservices.
+The backend follows CQRS. Commands (place bid, create auction) write to PostgreSQL, the system's source of truth. Queries are served from a denormalized read model maintained in Redis, kept fresh by event handlers rather than computed per request. Reads and writes scale independently.
+
+Bid processing is event-driven. A successful bid publishes a `BidPlaced` event to RabbitMQ; downstream consumers handle outbid notifications, read-model projection updates, and live client broadcasts without ever blocking the bid itself. A background worker closes auctions at their end time by publishing `AuctionEnded`, which drives winner notification and payment handling through the same event pipeline.
+
+## Architecture
+
+**Write path.** An incoming bid travels through a thin Minimal API endpoint into a MediatR command handler. The handler validates the bid against the auction's current price and persists it with optimistic concurrency — a row version on the auction row causes stale writes to be rejected and retried, so two simultaneous bids can never corrupt the price. Bids for the same auction are processed with per-auction ordering.
+
+**Read path.** Auction cards are served from a Redis projection (current price, bid count) updated by `BidPlaced` consumers. PostgreSQL is never joined at read time for hot paths.
+
+**Real-time layer.** SignalR pushes price and bid-count updates to clients grouped per auction. Broadcasts are driven exclusively by the event flow — there is no ad-hoc side channel — so every screen reflects the same source of truth. Redis also tracks per-auction watcher presence with short-TTL keys, powering a live viewer count.
+
+**Identity and authorization.** Keycloak owns identity via OpenID Connect. The Angular client redirects to Keycloak for login; the API validates issued tokens and enforces roles (Bidder, Seller, Admin) on protected endpoints. Application user records are thin profiles linked by Keycloak's user ID.
+
+**Secrets.** Connection strings, client secrets, and API keys live in HashiCorp Vault and are fetched at startup. No secrets exist in configuration files or repository history.
+
+**Observability.** Every bid is logged as a structured Serilog event (auction, bidder, amount, timestamp), forming an auditable history from day one. OpenTelemetry traces and metrics — wired through .NET Aspire's service defaults — flow alongside those logs into OpenObserve, where saved queries surface bid activity per auction and flag suspicious patterns such as one account rapidly hammering a single auction.
+
+## Technology
+
+| Concern | Technology |
+| --- | --- |
+| API | ASP.NET Core Minimal APIs, MediatR, FluentValidation |
+| Persistence | PostgreSQL, EF Core (code-first migrations, optimistic concurrency) |
+| Caching and presence | Redis |
+| Messaging | RabbitMQ with MassTransit |
+| Real-time | SignalR |
+| Identity | Keycloak (OpenID Connect) |
+| Secrets | HashiCorp Vault |
+| Logging | Serilog (structured) |
+| Telemetry | OpenTelemetry via .NET Aspire service defaults |
+| Observability backend | OpenObserve (OTLP) |
+| Orchestration | .NET Aspire AppHost; Docker Compose retained as reference |
+| Frontend | Angular |
+
+## Solution Layout
+
+The solution contains three projects. `Api` hosts the application itself, organized as one folder per feature slice, plus the domain models and EF Core migrations. `AppHost` is the .NET Aspire orchestrator that declares every resource — PostgreSQL, Redis, RabbitMQ, Keycloak, Vault, OpenObserve, and the API — including startup ordering and health-based waits. `ServiceDefaults` carries the shared OpenTelemetry, resilience, and health-check configuration consumed by all services.
+
+## Running Locally
+
+Prerequisites: .NET SDK, Docker Desktop (running), Node.js with the Angular CLI.
+
+Start the full system through Aspire:
 
 ```
-src/
-├── Api/                  # ASP.NET Core Minimal API
-│   ├── Features/         # Vertical slices (one folder per feature)
-│   │   ├── CreateAuction/
-│   │   ├── GetAuctions/
-│   │   └── PlaceBid/
-│   ├── Models/           # Auction, Bid entities
-│   ├── Migrations/       # EF Core migrations
-│   └── Program.cs
-├── AppHost/              # .NET Aspire orchestration
-└── ServiceDefaults/      # Shared OpenTelemetry / health check defaults
-```
-
-## 🧰 Tech Stack
-
-| Technology | Role |
-|---|---|
-| **ASP.NET Core (Minimal APIs)** | JSON API backend |
-| **PostgreSQL + EF Core** | Source of truth for auctions & bids |
-| **MediatR** | Routes requests to handlers (CQRS spine) |
-| **Serilog** | Structured logging — the bid audit trail |
-| **Docker + Docker Compose** | Containerized API + database |
-| **.NET Aspire** | Orchestration, service discovery, live dashboard (logs + traces) |
-| **Angular** | Frontend (auction list, detail, bidding) |
-
-## ✅ Progress
-
-Built strictly in order — each phase has a Definition of Done that must pass before moving on.
-
-- [x] **Phase 0 — Setup & foundations** · Toolbelt, Git repo, solution skeleton
-- [x] **Phase 1 — Core canvas** · Create auction, list auctions, place bid (refresh-to-see)
-- [x] **Phase 2 — Vertical slices + MediatR + CQRS** · Feature folders, thin endpoints, and the two-bidders race condition reproduced then fixed with **optimistic concurrency**
-- [x] **Phase 3 — Serilog structured logging** · Every bid logged as a structured event (`AuctionId`, `BidderId`, `Amount`, `Timestamp`) — the start of the audit trail
-- [x] **Phase 4 — Docker + Compose** · API + Postgres running together with one command
-- [x] **Phase 4.5 — .NET Aspire** · AppHost orchestration, automatic connection injection, live dashboard with logs **and distributed traces**
-- [ ] **Phase 5 — Redis** · Cache auction prices + live "X watching" presence counter
-- [ ] **Phase 6 — RabbitMQ + MassTransit** · Event-driven bids, background auction-ending worker, CQRS read model
-- [ ] **Phase 7 — SignalR** · Live bids on every screen, no refresh
-- [ ] **Phase 8 — Keycloak** · Login, roles (Bidder / Seller / Admin)
-- [ ] **Phase 9 — HashiCorp Vault** · Secrets out of config files
-- [ ] **Phase 10 — OpenObserve** · Searchable logs/traces/metrics + suspicious-bidding detection
-- [ ] **Appendix A — Microservices split** (optional endgame)
-
-## 🚀 Running Locally
-
-### Prerequisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/download)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (running)
-- [Node.js + Angular CLI](https://angular.dev) (for the frontend)
-
-### Option 1 — .NET Aspire (recommended)
-
-One command starts everything — Postgres container, API, with connection strings injected automatically:
-
-```bash
 cd src/AppHost
 dotnet run
 ```
 
-Then open the **Aspire dashboard** URL printed in the console (grab the login token from the same output). From there you can:
-- See all resources (`postgres`, `gavellive` db, `api`) and their health
-- Jump to the API's Swagger UI from the resource's URL
-- Watch **live logs** and **distributed traces** for every request
+The AppHost starts every dependency as a container, waits for health, injects connection details into the API via service discovery, and prints the Aspire dashboard URL with a login token. From the dashboard you can open the API's Swagger UI, inspect each resource's configuration, and watch live logs and distributed traces per request.
 
-> **First run only:** apply EF Core migrations against the Aspire-managed database. Copy the Postgres connection string from the dashboard (click the `postgres` resource), then:
-> ```bash
-> cd src/Api
-> dotnet ef database update --connection "<connection string from dashboard>"
-> ```
+On a fresh database, apply migrations once using the connection string exposed by the dashboard's PostgreSQL resource:
 
-### Option 2 — Docker Compose (the manual way, kept for reference)
-
-```bash
-docker compose up --build
+```
+cd src/Api
+dotnet ef database update --connection "<connection string from the dashboard>"
 ```
 
-API + Swagger available at `http://localhost:8080/swagger/index.html`.
+A Docker Compose definition is also included and runs the API and PostgreSQL standalone (`docker compose up --build`), primarily kept as a reference for what Aspire automates.
 
-## 📚 Key Lessons Baked Into the Code
+## Design Decisions
 
-- **The concurrency bug** — two simultaneous bids on one auction corrupt the price. Fixed with EF Core optimistic concurrency (a row version on `Auction`; stale saves are rejected and retried). *Phase 2*
-- **Structured logs, not sentences** — `log.Information("Bid placed {AuctionId} {BidderId} {Amount} {Timestamp}", ...)` produces queryable fields, not grep-only strings. *Phase 3*
-- **Compose before Aspire** — hand-wiring connection strings first makes it obvious what Aspire automates (and makes password-mismatch bugs structurally impossible afterward). *Phase 4 → 4.5*
-- **Pin your database version** — `postgres:latest` silently jumped to a major version with incompatible data layout. Pinned images (`postgres:16`) keep dev environments predictable. *Phase 4, learned the hard way*
+**Vertical slices over layers.** Changing "place a bid" touches one folder, not five. The codebase states what the product does, and slice boundaries double as the future service boundaries.
 
-## 🗺️ Roadmap Philosophy
+**Optimistic concurrency over locking.** Auctions are read-heavy with contention concentrated in short bursts near close. Rejecting and retrying stale writes outperforms pessimistic locking here and keeps the handler logic simple.
 
-This project follows a two-document plan (Project Brief + Build Roadmap). Every phase uses the same structure: **Goal → Build → Why/Where/How → Definition of Done → Pitfalls.** The monolith is not a throwaway — it's the correct first step, and the eventual microservices split is mechanical because of the event-driven seams designed in from Phase 6.
+**Events as the integration seam.** Notifications, projections, and broadcasts consume `BidPlaced` independently. None of them can slow down or fail a bid, and any consumer group can be lifted into its own deployable service without changing how it communicates.
 
----
+**A monolith first, deliberately.** The system is designed so that decomposition is mechanical: the Notifications slice group, for example, consumes only events and shares no tables, so moving it into its own service requires no protocol changes. The monolith is the correct first step, not a compromise.
 
-*Built as a deep-dive learning project — one phase, one technology, one felt problem at a time.*
+**Pinned infrastructure versions.** All container images are version-pinned. Database images in particular are never run as `latest`; a major-version jump changes the on-disk data layout and breaks existing volumes.
+
+## Audit and Abuse Detection
+
+Every bid attempt produces a structured log event carrying the auction, bidder, amount, and timestamp. Because these are fields rather than sentences, the history is queryable: OpenObserve dashboards show bid activity per auction, and saved queries surface abuse signatures — many rapid bids from one account on one auction, or repeated just-below-threshold probing. The audit trail was built in before the features that depend on it, so the platform's trust story is grounded in data it has collected from the beginning.
+
+## License
+
+MIT
