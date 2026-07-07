@@ -85,6 +85,4 @@ A Docker Compose definition is also included and runs the API and PostgreSQL sta
 
 Every bid attempt produces a structured log event carrying the auction, bidder, amount, and timestamp. Because these are fields rather than sentences, the history is queryable: OpenObserve dashboards show bid activity per auction, and saved queries surface abuse signatures — many rapid bids from one account on one auction, or repeated just-below-threshold probing. The audit trail was built in before the features that depend on it, so the platform's trust story is grounded in data it has collected from the beginning.
 
-## License
 
-MIT
