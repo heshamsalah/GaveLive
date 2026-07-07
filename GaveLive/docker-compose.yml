@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: gavellive-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gavellive
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./src/Api
+      dockerfile: Dockerfile
+    container_name: gavellive-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=gavellive;Username=postgres;Password=postgres"
+
+volumes:
+  postgres-data:

@@ -1,6 +1,7 @@
 ﻿using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace Api;
 
@@ -17,8 +18,16 @@ public class AuctionDbContextFactory : IDesignTimeDbContextFactory<AuctionDbCont
 {
     public AuctionDbContext CreateDbContext(string[] args)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
         var optionsBuilder = new DbContextOptionsBuilder<AuctionDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=gavellive;Username=postgres;Password=password"); // remove whole stringConnection 
+        optionsBuilder.UseNpgsql(connectionString);
+
         return new AuctionDbContext(optionsBuilder.Options);
     }
 }

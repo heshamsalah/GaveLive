@@ -37,7 +37,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging(); // structured log per HTTP request, free
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // Wire up all endpoints
 app.MapCreateAuctionEndpoint();
