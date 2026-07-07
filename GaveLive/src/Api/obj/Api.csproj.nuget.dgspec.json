@@ -32,6 +32,122 @@
           "net9.0": {
             "framework": "net9.0",
             "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\ServiceDefaults\\ServiceDefaults.csproj": {
+                "projectPath": "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\ServiceDefaults\\ServiceDefaults.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "framework": "net9.0",
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Aspire.Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[13.4.6, )"
+            },
+            "MediatR.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.16, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.1.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\ServiceDefaults\\ServiceDefaults.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\ServiceDefaults\\ServiceDefaults.csproj",
+        "projectName": "ServiceDefaults",
+        "projectPath": "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\ServiceDefaults\\ServiceDefaults.csproj",
+        "packagesPath": "C:\\Users\\hesha\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\ServiceDefaults\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\hesha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "framework": "net9.0",
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -52,41 +168,33 @@
           "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
-            "MediatR.Extensions.Microsoft.DependencyInjection": {
+            "Microsoft.Extensions.Http.Resilience": {
               "target": "Package",
-              "version": "[11.1.0, )"
+              "version": "[10.6.0, )"
             },
-            "Microsoft.EntityFrameworkCore": {
+            "Microsoft.Extensions.ServiceDiscovery": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[10.6.0, )"
             },
-            "Microsoft.EntityFrameworkCore.Design": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
+            "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[1.15.3, )"
             },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
+            "OpenTelemetry.Extensions.Hosting": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[1.15.3, )"
             },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+            "OpenTelemetry.Instrumentation.AspNetCore": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[1.15.2, )"
             },
-            "Serilog.AspNetCore": {
+            "OpenTelemetry.Instrumentation.Http": {
               "target": "Package",
-              "version": "[10.0.0, )"
+              "version": "[1.15.1, )"
             },
-            "Serilog.Sinks.Console": {
+            "OpenTelemetry.Instrumentation.Runtime": {
               "target": "Package",
-              "version": "[6.1.1, )"
-            },
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[9.0.1, )"
+              "version": "[1.15.1, )"
             }
           },
           "imports": [

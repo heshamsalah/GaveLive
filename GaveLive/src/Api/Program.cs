@@ -8,6 +8,8 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Serilog must be set up before anything else touches logging
 builder.Host.UseSerilog((context, config) =>
 {
@@ -17,10 +19,9 @@ builder.Host.UseSerilog((context, config) =>
         .WriteTo.Console();
 });
 
+
 // Add services
-builder.Services.AddDbContext<AuctionDbContext>(options =>
-    options.UseNpgsql(builder.Configuration
-        .GetConnectionString("DefaultConnection")));
+builder.AddNpgsqlDbContext<AuctionDbContext>(connectionName: "gavellive");
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
 

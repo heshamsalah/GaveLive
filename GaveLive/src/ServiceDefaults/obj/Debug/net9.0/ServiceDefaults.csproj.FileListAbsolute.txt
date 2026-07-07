@@ -1,0 +1,13 @@
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\bin\Debug\net9.0\ServiceDefaults.deps.json
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\bin\Debug\net9.0\ServiceDefaults.dll
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\bin\Debug\net9.0\ServiceDefaults.pdb
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.csproj.AssemblyReference.cache
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.AssemblyInfoInputs.cache
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.AssemblyInfo.cs
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.csproj.CoreCompileInputs.cache
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.sourcelink.json
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.dll
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\refint\ServiceDefaults.dll
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ServiceDefaults.pdb
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\ServiceDefaults\obj\Debug\net9.0\ref\ServiceDefaults.dll
