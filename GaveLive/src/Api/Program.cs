@@ -3,6 +3,7 @@ using Api.Features.CreateAuction;
 using Api.Features.GetAuctions;
 using Api.Features.PlaceBid;
 using Api.Features.WatchAuction;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -25,6 +26,17 @@ builder.Host.UseSerilog((context, config) =>
 builder.AddNpgsqlDbContext<AuctionDbContext>(connectionName: "gavellive");
 builder.AddRedisClient(connectionName: "cache");
 builder.Services.AddMediatR(typeof(Program).Assembly);
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<OutbidNotificationConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

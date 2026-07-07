@@ -60,9 +60,21 @@
               "target": "Package",
               "version": "[13.4.6, )"
             },
+            "Aspire.RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[13.4.6, )"
+            },
             "Aspire.StackExchange.Redis": {
               "target": "Package",
               "version": "[13.4.6, )"
+            },
+            "MassTransit": {
+              "target": "Package",
+              "version": "[9.1.2, )"
+            },
+            "MassTransit.RabbitMQ": {
+              "target": "Package",
+              "version": "[9.1.2, )"
             },
             "MediatR.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",

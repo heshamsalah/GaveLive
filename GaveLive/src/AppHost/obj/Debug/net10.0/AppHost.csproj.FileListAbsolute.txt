@@ -114,3 +114,6 @@ C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\obj\Debug\net10.0\
 C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\obj\Debug\net10.0\AppHost.pdb
 C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\obj\Debug\net10.0\AppHost.genruntimeconfig.cache
 C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\obj\Debug\net10.0\ref\AppHost.dll
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\bin\Debug\net10.0\Aspire.Hosting.RabbitMQ.dll
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\bin\Debug\net10.0\HealthChecks.Rabbitmq.dll
+C:\Users\hesha\OneDrive\Desktop\GaveLive\GaveLive\src\AppHost\bin\Debug\net10.0\RabbitMQ.Client.dll

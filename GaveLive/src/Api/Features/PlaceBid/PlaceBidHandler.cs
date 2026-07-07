@@ -1,4 +1,5 @@
 ﻿using Api.Models;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -12,12 +13,18 @@ public class PlaceBidHandler : IRequestHandler<PlaceBidCommand, PlaceBidResult>
     private readonly AuctionDbContext _db;
     private readonly ILogger<PlaceBidHandler> _logger;
     private readonly IConnectionMultiplexer _redis;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public PlaceBidHandler(AuctionDbContext db, ILogger<PlaceBidHandler> logger, IConnectionMultiplexer redis)
+    public PlaceBidHandler(
+        AuctionDbContext db,
+        ILogger<PlaceBidHandler> logger,
+        IConnectionMultiplexer redis,
+        IPublishEndpoint publishEndpoint)
     {
         _db = db;
         _logger = logger;
         _redis = redis;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<PlaceBidResult> Handle(PlaceBidCommand command, CancellationToken cancellationToken)
@@ -62,6 +69,15 @@ public class PlaceBidHandler : IRequestHandler<PlaceBidCommand, PlaceBidResult>
             bid.Amount,
             bid.PlacedAt
         );
+
+        // Publish the event — anything reacting to bids (notifications, read model, etc.)
+        // does its work independently, without slowing down this response
+        await _publishEndpoint.Publish(new BidPlaced(
+            bid.AuctionId,
+            bid.BidderId,
+            bid.Amount,
+            bid.PlacedAt
+        ), cancellationToken);
 
         return new PlaceBidResult(true, "Bid placed successfully!");
     }
