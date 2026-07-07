@@ -1,5 +1,6 @@
 using Api;
 using Api.Features.CreateAuction;
+using Api.Features.EndAuction;
 using Api.Features.GetAuctions;
 using Api.Features.PlaceBid;
 using Api.Features.WatchAuction;
@@ -30,6 +31,8 @@ builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<OutbidNotificationConsumer>();
+    x.AddConsumer<WinnerNotificationConsumer>();
+    x.AddConsumer<AuctionCardProjectionConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -40,7 +43,7 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddHostedService<AuctionEndingWorker>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

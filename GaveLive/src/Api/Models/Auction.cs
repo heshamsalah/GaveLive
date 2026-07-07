@@ -15,4 +15,6 @@ public class Auction
 
     [Timestamp]
     public uint RowVersion { get; set; }
+
+    public string? PaymentStatus { get; set; }
 }
