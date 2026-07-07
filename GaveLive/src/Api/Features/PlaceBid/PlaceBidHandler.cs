@@ -1,18 +1,23 @@
 ﻿using Api.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Api.Features.PlaceBid;
 
 public class PlaceBidHandler : IRequestHandler<PlaceBidCommand, PlaceBidResult>
 {
+    private const string AuctionsCacheKey = "auctions:all";
+
     private readonly AuctionDbContext _db;
     private readonly ILogger<PlaceBidHandler> _logger;
+    private readonly IConnectionMultiplexer _redis;
 
-    public PlaceBidHandler(AuctionDbContext db, ILogger<PlaceBidHandler> logger)
+    public PlaceBidHandler(AuctionDbContext db, ILogger<PlaceBidHandler> logger, IConnectionMultiplexer redis)
     {
         _db = db;
         _logger = logger;
+        _redis = redis;
     }
 
     public async Task<PlaceBidResult> Handle(PlaceBidCommand command, CancellationToken cancellationToken)
@@ -45,6 +50,10 @@ public class PlaceBidHandler : IRequestHandler<PlaceBidCommand, PlaceBidResult>
         {
             return new PlaceBidResult(false, "Someone else just placed a bid! Please try again.");
         }
+
+        // Invalidate the cached auction list so the next read gets the fresh price
+        var cache = _redis.GetDatabase();
+        await cache.KeyDeleteAsync(AuctionsCacheKey);
 
         _logger.LogInformation(
             "Bid placed {AuctionId} {BidderId} {Amount} {Timestamp}",

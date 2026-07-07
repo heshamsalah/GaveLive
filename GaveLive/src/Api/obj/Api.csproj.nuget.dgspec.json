@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[13.4.6, )"
             },
+            "Aspire.StackExchange.Redis": {
+              "target": "Package",
+              "version": "[13.4.6, )"
+            },
             "MediatR.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[11.1.0, )"

@@ -9,7 +9,8 @@
       "AppHost/1.0.0": {
         "dependencies": {
           "Aspire.Hosting.AppHost": "13.4.6",
-          "Aspire.Hosting.PostgreSQL": "13.4.6"
+          "Aspire.Hosting.PostgreSQL": "13.4.6",
+          "Aspire.Hosting.Redis": "13.4.6"
         },
         "runtime": {
           "AppHost.dll": {}
@@ -134,12 +135,51 @@
           }
         }
       },
+      "Aspire.Hosting.Redis/13.4.6": {
+        "dependencies": {
+          "AspNetCore.HealthChecks.Redis": "9.0.0",
+          "AspNetCore.HealthChecks.Uris": "9.0.0",
+          "Aspire.Hosting": "13.4.6",
+          "Google.Protobuf": "3.34.1",
+          "Grpc.AspNetCore": "2.80.0",
+          "Grpc.Net.ClientFactory": "2.80.0",
+          "Humanizer.Core": "3.0.10",
+          "JsonPatch.Net": "3.3.0",
+          "KubernetesClient": "19.0.2",
+          "ModelContextProtocol": "1.3.0",
+          "Newtonsoft.Json": "13.0.4",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.15.3",
+          "OpenTelemetry.Extensions.Hosting": "1.15.3",
+          "Polly.Core": "8.6.6",
+          "Semver": "3.0.0",
+          "StackExchange.Redis": "2.13.1",
+          "StreamJsonRpc": "2.25.29",
+          "System.IO.Hashing": "10.0.8"
+        },
+        "runtime": {
+          "lib/net8.0/Aspire.Hosting.Redis.dll": {
+            "assemblyVersion": "13.4.6.0",
+            "fileVersion": "13.400.626.31906"
+          }
+        }
+      },
       "AspNetCore.HealthChecks.NpgSql/9.0.0": {
         "dependencies": {
           "Npgsql": "8.0.3"
         },
         "runtime": {
           "lib/net8.0/HealthChecks.NpgSql.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.0"
+          }
+        }
+      },
+      "AspNetCore.HealthChecks.Redis/9.0.0": {
+        "dependencies": {
+          "StackExchange.Redis": "2.13.1"
+        },
+        "runtime": {
+          "lib/net8.0/HealthChecks.Redis.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.0.0"
           }
@@ -542,6 +582,14 @@
           }
         }
       },
+      "Pipelines.Sockets.Unofficial/2.2.16": {
+        "runtime": {
+          "lib/net9.0/Pipelines.Sockets.Unofficial.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "2.2.16.21791"
+          }
+        }
+      },
       "Polly.Core/8.6.6": {
         "runtime": {
           "lib/net8.0/Polly.Core.dll": {
@@ -563,6 +611,18 @@
           "lib/net5.0/Semver.dll": {
             "assemblyVersion": "3.0.0.0",
             "fileVersion": "3.0.0.0"
+          }
+        }
+      },
+      "StackExchange.Redis/2.13.1": {
+        "dependencies": {
+          "Pipelines.Sockets.Unofficial": "2.2.16",
+          "System.IO.Hashing": "10.0.8"
+        },
+        "runtime": {
+          "lib/net10.0/StackExchange.Redis.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.13.1.38939"
           }
         }
       },
@@ -668,12 +728,26 @@
       "path": "aspire.hosting.postgresql/13.4.6",
       "hashPath": "aspire.hosting.postgresql.13.4.6.nupkg.sha512"
     },
+    "Aspire.Hosting.Redis/13.4.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UW4XTP72beiHhyth+2IHxilEN6HOnc+u88m9C9qoc35ysoTsZrxDDdTQjc6mteS8yENitQrE8VJlg2bLoU2AoQ==",
+      "path": "aspire.hosting.redis/13.4.6",
+      "hashPath": "aspire.hosting.redis.13.4.6.nupkg.sha512"
+    },
     "AspNetCore.HealthChecks.NpgSql/9.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-npc58/AD5zuVxERdhCl2Kb7WnL37mwX42SJcXIwvmEig0/dugOLg3SIwtfvvh3TnvTwR/sk5LYNkkPaBdks61A==",
       "path": "aspnetcore.healthchecks.npgsql/9.0.0",
       "hashPath": "aspnetcore.healthchecks.npgsql.9.0.0.nupkg.sha512"
+    },
+    "AspNetCore.HealthChecks.Redis/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yNH0h8GLRbAf+PU5HNVLZ5hNeyq9mDVmRKO9xuZsme/znUYoBJlQvI0gq45gaZNlLncCHkMhR4o90MuT+gxxPw==",
+      "path": "aspnetcore.healthchecks.redis/9.0.0",
+      "hashPath": "aspnetcore.healthchecks.redis.9.0.0.nupkg.sha512"
     },
     "AspNetCore.HealthChecks.Uris/9.0.0": {
       "type": "package",
@@ -899,6 +973,13 @@
       "path": "opentelemetry.extensions.hosting/1.15.3",
       "hashPath": "opentelemetry.extensions.hosting.1.15.3.nupkg.sha512"
     },
+    "Pipelines.Sockets.Unofficial/2.2.16": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nonu9l0YrZH6krVYbskBjE7uG0VMAnvOQ9PU+RmzUsy+++vHkqzzCkHRoP877OiA3iRTxJyNDLfpcU8hrJ3/YQ==",
+      "path": "pipelines.sockets.unofficial/2.2.16",
+      "hashPath": "pipelines.sockets.unofficial.2.2.16.nupkg.sha512"
+    },
     "Polly.Core/8.6.6": {
       "type": "package",
       "serviceable": true,
@@ -919,6 +1000,13 @@
       "sha512": "sha512-9jZCicsVgTebqkAujRWtC9J1A5EQVlu0TVKHcgoCuv345ve5DYf4D1MjhKEnQjdRZo6x/vdv6QQrYFs7ilGzLA==",
       "path": "semver/3.0.0",
       "hashPath": "semver.3.0.0.nupkg.sha512"
+    },
+    "StackExchange.Redis/2.13.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jC5wkRe8K6HPoDENUws+fl2d7+GKz+ky8SWEDzYzPx6hHt2EwxWm01gmYPWLzlT49jfYYap0guB5bExtyX9aIQ==",
+      "path": "stackexchange.redis/2.13.1",
+      "hashPath": "stackexchange.redis.2.13.1.nupkg.sha512"
     },
     "StreamJsonRpc/2.25.29": {
       "type": "package",

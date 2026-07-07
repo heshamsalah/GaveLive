@@ -5,8 +5,13 @@ var postgres = builder.AddPostgres("postgres")
 
 var gavellivedb = postgres.AddDatabase("gavellive");
 
+var cache = builder.AddRedis("cache")
+    .WithDataVolume();
+
 builder.AddProject<Projects.Api>("api")
     .WithReference(gavellivedb)
-    .WaitFor(gavellivedb);
+    .WaitFor(gavellivedb)
+    .WithReference(cache)
+    .WaitFor(cache);
 
 builder.Build().Run();

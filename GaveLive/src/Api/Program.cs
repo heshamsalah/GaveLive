@@ -2,6 +2,7 @@ using Api;
 using Api.Features.CreateAuction;
 using Api.Features.GetAuctions;
 using Api.Features.PlaceBid;
+using Api.Features.WatchAuction;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -22,7 +23,7 @@ builder.Host.UseSerilog((context, config) =>
 
 // Add services
 builder.AddNpgsqlDbContext<AuctionDbContext>(connectionName: "gavellive");
-
+builder.AddRedisClient(connectionName: "cache");
 builder.Services.AddMediatR(typeof(Program).Assembly);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -47,5 +48,7 @@ if (!app.Environment.IsDevelopment())
 app.MapCreateAuctionEndpoint();
 app.MapGetAuctionsEndpoint();
 app.MapPlaceBidEndpoint();
+app.MapWatchAuctionEndpoint();
+app.MapGetWatcherCountEndpoint();
 
 app.Run();
