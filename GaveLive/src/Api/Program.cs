@@ -37,6 +37,22 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+
+        // AuctionCardProjectionConsumer gets its own explicit endpoint so we can
+        // guarantee per-auction ordering: two events for the SAME auction (a bid,
+        // or the auction ending) must never be processed out of order or in parallel,
+        // otherwise the Redis card could end up reflecting stale data.
+        cfg.ReceiveEndpoint("auction-card-projection", e =>
+        {
+            e.ConfigureConsumer<AuctionCardProjectionConsumer>(context, c =>
+            {
+                c.Message<BidPlaced>(m => m.UsePartitioner(16, p => p.Message.AuctionId));
+                c.Message<AuctionEnded>(m => m.UsePartitioner(16, p => p.Message.AuctionId));
+            });
+        });
+
+        // Everything else (OutbidNotificationConsumer, WinnerNotificationConsumer)
+        // keeps using MassTransit's automatic convention-based endpoint setup.
         cfg.ConfigureEndpoints(context);
     });
 });
