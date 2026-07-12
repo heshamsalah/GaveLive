@@ -27,6 +27,19 @@ builder.Host.UseSerilog((context, config) =>
 builder.AddNpgsqlDbContext<AuctionDbContext>(connectionName: "gavellive");
 builder.AddRedisClient(connectionName: "cache");
 builder.Services.AddMediatR(typeof(Program).Assembly);
+builder.Services.AddSignalR();
+
+// Allows the standalone SignalR test page (or any browser client during
+// development) to connect from a different origin than the API itself.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowTestClient", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddMassTransit(x =>
 {
@@ -75,11 +88,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+app.UseCors("AllowTestClient");
+
 // Wire up all endpoints
 app.MapCreateAuctionEndpoint();
 app.MapGetAuctionsEndpoint();
 app.MapPlaceBidEndpoint();
 app.MapWatchAuctionEndpoint();
 app.MapGetWatcherCountEndpoint();
+app.MapHub<AuctionHub>("/hubs/auction");
 
 app.Run();

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GavelLive — SignalR test</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #14110D;
+    color: #EDE6D9;
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  h1 { color: #C9A227; font-size: 22px; }
+  label { display: block; font-size: 13px; color: #A69C8C; margin: 16px 0 6px; }
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #1A1510;
+    border: 1px solid #3A311F;
+    border-radius: 6px;
+    color: #EDE6D9;
+    padding: 10px 12px;
+    font-family: monospace;
+  }
+  button {
+    margin-top: 16px;
+    background: #C9A227;
+    color: #14110D;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  #status { margin-top: 12px; font-size: 13px; color: #A69C8C; }
+  #status.connected { color: #A3D66B; }
+  #log {
+    margin-top: 24px;
+    background: #1A1510;
+    border: 1px solid #2E271C;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: monospace;
+    font-size: 13px;
+    min-height: 120px;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+  <h1>GavelLive — SignalR live test</h1>
+
+  <label>API base URL (from your Aspire dashboard, no trailing slash)</label>
+  <input id="baseUrl" value="https://localhost:7179" />
+
+  <label>Auction ID to watch</label>
+  <input id="auctionId" placeholder="paste an auction guid here" />
+
+  <button id="connectBtn">Connect &amp; join group</button>
+
+  <div id="status">not connected</div>
+
+  <div id="log">waiting for events...</div>
+
+<script>
+  let connection = null;
+
+  document.getElementById('connectBtn').addEventListener('click', async () => {
+    const baseUrl = document.getElementById('baseUrl').value.trim();
+    const auctionId = document.getElementById('auctionId').value.trim();
+    const statusEl = document.getElementById('status');
+    const logEl = document.getElementById('log');
+
+    if (!auctionId) {
+      alert('Paste an auction ID first');
+      return;
+    }
+
+    if (connection) {
+      await connection.stop();
+    }
+
+    connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${baseUrl}/hubs/auction`, { withCredentials: false })
+      .withAutomaticReconnect()
+      .build();
+
+    connection.on('PriceUpdated', (data) => {
+      const line = `[PriceUpdated] auction=${data.auctionId} price=${data.price} bids=${data.bidCount}`;
+      logEl.textContent = line + '\n' + logEl.textContent;
+    });
+
+    connection.on('AuctionEnded', (data) => {
+      const line = `[AuctionEnded] auction=${data.auctionId} status=${data.status}`;
+      logEl.textContent = line + '\n' + logEl.textContent;
+    });
+
+    connection.on('WatcherCountUpdated', (data) => {
+      const line = `[WatcherCountUpdated] auction=${data.auctionId} watchers=${data.watcherCount}`;
+      logEl.textContent = line + '\n' + logEl.textContent;
+    });
+
+    try {
+      await connection.start();
+      await connection.invoke('JoinAuctionGroup', auctionId);
+      statusEl.textContent = `connected, joined group ${auctionId}`;
+      statusEl.className = 'connected';
+    } catch (err) {
+      statusEl.textContent = 'connection failed: ' + err;
+      statusEl.className = '';
+    }
+  });
+</script>
+</body>
+</html>
