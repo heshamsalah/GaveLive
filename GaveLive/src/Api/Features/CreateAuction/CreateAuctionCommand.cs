@@ -7,7 +7,8 @@ public record CreateAuctionCommand(
     string Description,
     decimal StartingPrice,
     DateTime StartsAt,
-    DateTime EndsAt
+    DateTime EndsAt,
+    string SellerId
 ) : IRequest<CreateAuctionResult>;
 
 public record CreateAuctionResult(bool Success, Guid AuctionId);

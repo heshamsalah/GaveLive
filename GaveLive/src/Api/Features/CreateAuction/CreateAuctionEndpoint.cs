@@ -8,14 +8,24 @@ public static class CreateAuctionEndpoint
     {
         app.MapPost("/auctions", async (
             IMediator mediator,
-            CreateAuctionCommand command) =>
+            CreateAuctionCommand command,
+            HttpContext httpContext) =>
         {
-            var result = await mediator.Send(command);
+            var sellerId = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                           ?? httpContext.User.FindFirst("sub")?.Value;
+
+            if (string.IsNullOrEmpty(sellerId))
+                return Results.Unauthorized();
+
+            var commandWithSeller = command with { SellerId = sellerId };
+
+            var result = await mediator.Send(commandWithSeller);
 
             if (!result.Success)
                 return Results.BadRequest("Failed to create auction");
 
             return Results.Created($"/auctions/{result.AuctionId}", result);
-        });
+        })
+        .RequireAuthorization(policy => policy.RequireRole("Seller"));
     }
 }

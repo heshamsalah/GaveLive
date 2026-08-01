@@ -8,6 +8,7 @@ using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,6 @@ builder.Host.UseSerilog((context, config) =>
         .Enrich.FromLogContext()
         .WriteTo.Console();
 });
-
 
 // Add services
 builder.AddNpgsqlDbContext<AuctionDbContext>(connectionName: "gavellive");
@@ -40,6 +40,40 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddKeycloakJwtBearer(
+        serviceName: "keycloak",
+        realm: "gavelive",
+        options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.Audience = "account";
+
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = context =>
+                {
+                    var realmAccess = context.Principal?.FindFirst("realm_access")?.Value;
+                    if (!string.IsNullOrEmpty(realmAccess))
+                    {
+                        using var doc = System.Text.Json.JsonDocument.Parse(realmAccess);
+                        if (doc.RootElement.TryGetProperty("roles", out var roles))
+                        {
+                            var identity = context.Principal!.Identity as System.Security.Claims.ClaimsIdentity;
+                            foreach (var role in roles.EnumerateArray())
+                            {
+                                identity!.AddClaim(new System.Security.Claims.Claim(
+                                    System.Security.Claims.ClaimTypes.Role, role.GetString()!));
+                            }
+                        }
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -73,6 +107,7 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<AuctionEndingWorker>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -89,6 +124,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowTestClient");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Wire up all endpoints
 app.MapCreateAuctionEndpoint();

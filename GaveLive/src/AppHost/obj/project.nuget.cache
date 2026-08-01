@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "CSNEIE8Sm6g=",
+  "dgSpecHash": "faBkwUhvGAA=",
   "success": true,
   "projectFilePath": "C:\\Users\\hesha\\OneDrive\\Desktop\\GaveLive\\GaveLive\\src\\AppHost\\AppHost.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hesha\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\13.4.6\\aspire.dashboard.sdk.win-x64.13.4.6.nupkg.sha512",
     "C:\\Users\\hesha\\.nuget\\packages\\aspire.hosting\\13.4.6\\aspire.hosting.13.4.6.nupkg.sha512",
     "C:\\Users\\hesha\\.nuget\\packages\\aspire.hosting.apphost\\13.4.6\\aspire.hosting.apphost.13.4.6.nupkg.sha512",
+    "C:\\Users\\hesha\\.nuget\\packages\\aspire.hosting.keycloak\\13.4.6-preview.1.26319.6\\aspire.hosting.keycloak.13.4.6-preview.1.26319.6.nupkg.sha512",
     "C:\\Users\\hesha\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\13.4.6\\aspire.hosting.orchestration.win-x64.13.4.6.nupkg.sha512",
     "C:\\Users\\hesha\\.nuget\\packages\\aspire.hosting.postgresql\\13.4.6\\aspire.hosting.postgresql.13.4.6.nupkg.sha512",
     "C:\\Users\\hesha\\.nuget\\packages\\aspire.hosting.rabbitmq\\13.4.6\\aspire.hosting.rabbitmq.13.4.6.nupkg.sha512",

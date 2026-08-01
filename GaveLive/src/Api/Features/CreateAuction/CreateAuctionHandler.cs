@@ -23,7 +23,8 @@ public class CreateAuctionHandler : IRequestHandler<CreateAuctionCommand, Create
             CurrentPrice = command.StartingPrice,
             StartsAt = DateTime.SpecifyKind(command.StartsAt, DateTimeKind.Utc),
             EndsAt = DateTime.SpecifyKind(command.EndsAt, DateTimeKind.Utc),
-            Status = "Active"
+            Status = "Active",
+            SellerId = command.SellerId
         };
 
         _db.Auctions.Add(auction);

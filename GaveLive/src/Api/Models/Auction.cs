@@ -17,4 +17,6 @@ public class Auction
     public uint RowVersion { get; set; }
 
     public string? PaymentStatus { get; set; }
+
+    public string SellerId { get; set; } = string.Empty;
 }
